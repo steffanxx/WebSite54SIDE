@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация | 54SIDE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/login.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-box">
+            <!-- Левая колонка - Авторизация -->
+            <div class="auth-column">
+                <div class="auth-header">
+                    <h1>54SIDE</h1>
+                   
+                </div>
+
+                <div class="form-title">Вход</div>
+                
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Пароль</label>
+                        <input type="password" id="login-password" placeholder="Введите пароль" required>
+                    </div>
+                    <button type="submit" class="auth-button">Войти</button>
+                    <div class="auth-footer">
+                        <a href="#">Забыли пароль?</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Разделитель -->
+            <div class="divider"></div>
+
+            <!-- Правая колонка - Регистрация -->
+            <div class="auth-column">
+                <div class="form-title">Регистрация</div>
+                
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="register-name">Имя</label>
+                        <input type="text" id="register-name" placeholder="Ваше имя" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Пароль</label>
+                        <input type="password" id="register-password" placeholder="Придумайте пароль" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm">Подтвердите пароль</label>
+                        <input type="password" id="register-confirm" placeholder="Повторите пароль" required>
+                    </div>
+                    <button type="submit" class="auth-button">Зарегистрироваться</button>
+                    <div class="auth-footer">
+                       <a href="#">Регистрируясь вы соглашаетесь с нашими правилами.</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+     
+        // Логин
+document.getElementById('login-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+    
+    const response = await fetch('http://localhost:3000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+      
+        localStorage.setItem('adminEmail', data.email);
+        window.location.href = data.redirect;
+    } else {
+        alert(data.message);
+    }
+});
+
+
+document.getElementById('register-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const name = document.getElementById('register-name').value;
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
+    
+    const response = await fetch('http://localhost:3000/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+    });
+    
+    const data = await response.json();
+    alert(data.message);
+    
+    if (data.success) {
+        
+        document.getElementById('register-form').reset();
+    }
+});
+    </script>
+</body>
+</html>

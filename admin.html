@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ панель - 54side</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Jost', sans-serif;
+            background-color: #1a1a1a;
+            color: #f5f5f5;
+            line-height: 1.6;
+        }
+
+        .admin-header {
+            background: #2a2a2a;
+            padding: 20px 50px;
+            border-bottom: 2px solid #8b4513;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h1 {
+            color: #daa520;
+            font-size: 1.8rem;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .admin-login {
+            color: #f5f5f5;
+            font-weight: 500;
+        }
+
+        .logout-btn {
+            padding: 8px 20px;
+            background: #8b4513;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Jost', sans-serif;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #a0522d;
+        }
+
+        .admin-content {
+            padding: 40px 50px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .admin-section {
+            background: #2a2a2a;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: #daa520;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .add-btn {
+            padding: 10px 20px;
+            background: #8b4513;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Jost', sans-serif;
+            transition: background 0.3s ease;
+        }
+
+        .add-btn:hover {
+            background: #a0522d;
+        }
+
+        .places-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .place-card {
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid #333;
+        }
+
+        .place-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .place-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #f5f5f5;
+        }
+
+        .place-category {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #8b4513;
+            color: white;
+            border-radius: 15px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .place-description {
+            color: #cccccc;
+            font-size: 14px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .place-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .edit-btn, .delete-btn {
+            padding: 6px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Jost', sans-serif;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .edit-btn {
+            background: #daa520;
+            color: #1a1a1a;
+        }
+
+        .edit-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: #2a2a2a;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            color: #daa520;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cccccc;
+            font-weight: 500;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            background: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #f5f5f5;
+            font-family: 'Jost', sans-serif;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .cancel-btn {
+            padding: 10px 20px;
+            background: #666;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Jost', sans-serif;
+        }
+
+        .cancel-btn:hover {
+            background: #777;
+        }
+
+        .save-btn {
+            padding: 10px 20px;
+            background: #8b4513;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Jost', sans-serif;
+        }
+
+        .save-btn:hover {
+            background: #a0522d;
+        }
+
+        @media (max-width: 768px) {
+            .admin-header {
+                padding: 15px 20px;
+            }
+            
+            .admin-content {
+                padding: 20px;
+            }
+            
+            .admin-section {
+                padding: 20px;
+            }
+            
+            .places-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <h1>👑 Админ панель 54side</h1>
+        <div class="admin-info">
+            <span class="admin-login" id="adminLogin">Администратор</span>
+            <button class="logout-btn" onclick="logout()">Выйти</button>
+        </div>
+    </div>
+
+    <div class="admin-content">
+        <div class="admin-section">
+            <div class="section-title">
+                <span>Управление местами</span>
+                <button class="add-btn" onclick="openAddModal()">+ Добавить место</button>
+            </div>
+            <div class="places-grid" id="adminPlacesGrid">
+                <!-- Places will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Place Modal -->
+    <div class="modal" id="placeModal">
+        <div class="modal-content">
+            <h3 class="modal-title" id="modalTitle">Добавить место</h3>
+            <form id="placeForm">
+                <input type="hidden" id="placeId">
+                <div class="form-group">
+                    <label for="placeTitle">Название</label>
+                    <input type="text" id="placeTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="placeCategory">Категория</label>
+                    <select id="placeCategory" required>
+                        <option value="">Выберите категорию</option>
+                        <option value="Кафе">Кафе</option>
+                        <option value="Рестораны">Рестораны</option>
+                        <option value="Бары">Бары</option>
+                        <option value="Кофейни">Кофейни</option>
+                        <option value="Грузинская">Грузинская</option>
+                        <option value="Итальянская">Итальянская</option>
+                        <option value="Азиатская">Азиатская</option>
+                        <option value="Веганская">Веганская</option>
+                        <option value="Стейки">Стейки</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="placeDescription">Описание</label>
+                    <textarea id="placeDescription" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="placeImage">URL изображения</label>
+                    <input type="url" id="placeImage" required>
+                </div>
+                <div class="form-group">
+                    <label for="placeMapLink">Ссылка на карту</label>
+                    <input type="url" id="placeMapLink" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="closeModal()">Отмена</button>
+                    <button type="submit" class="save-btn">Сохранить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let places = JSON.parse(localStorage.getItem('adminPlaces')) || [];
+        let editingPlaceId = null;
+
+        const adminLogin = localStorage.getItem('adminEmail') || 'admin@54side.ru';
+        document.getElementById('adminLogin').textContent = adminLogin;
+
+        function logout() {
+            localStorage.removeItem('adminEmail');
+            window.location.href = '/login.html';
+        }
+
+        function loadPlaces() {
+            const grid = document.getElementById('adminPlacesGrid');
+            grid.innerHTML = '';
+
+            if (places.length === 0) {
+                grid.innerHTML = '<p style="color: #666; text-align: center;">Пока нет добавленных мест</p>';
+                return;
+            }
+
+            places.forEach(place => {
+                const placeCard = document.createElement('div');
+                placeCard.className = 'place-card';
+                placeCard.innerHTML = `
+                    <img src="${place.image}" alt="${place.title}" class="place-image">
+                    <div class="place-category">${place.category}</div>
+                    <h3 class="place-title">${place.title}</h3>
+                    <p class="place-description">${place.description}</p>
+                    <div class="place-actions">
+                        <button class="edit-btn" onclick="editPlace(${place.id})">Редактировать</button>
+                        <button class="delete-btn" onclick="deletePlace(${place.id})">Удалить</button>
+                    </div>
+                `;
+                grid.appendChild(placeCard);
+            });
+        }
+
+        function openAddModal() {
+            editingPlaceId = null;
+            document.getElementById('modalTitle').textContent = 'Добавить место';
+            document.getElementById('placeForm').reset();
+            document.getElementById('placeModal').style.display = 'flex';
+        }
+
+        function editPlace(id) {
+            const place = places.find(p => p.id === id);
+            if (place) {
+                editingPlaceId = id;
+                document.getElementById('modalTitle').textContent = 'Редактировать место';
+                document.getElementById('placeId').value = place.id;
+                document.getElementById('placeTitle').value = place.title;
+                document.getElementById('placeCategory').value = place.category;
+                document.getElementById('placeDescription').value = place.description;
+                document.getElementById('placeImage').value = place.image;
+                document.getElementById('placeMapLink').value = place.mapLink;
+                document.getElementById('placeModal').style.display = 'flex';
+            }
+        }
+
+        function deletePlace(id) {
+            if (confirm('Вы уверены, что хотите удалить это место?')) {
+                places = places.filter(p => p.id !== id);
+                localStorage.setItem('adminPlaces', JSON.stringify(places));
+                loadPlaces();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('placeModal').style.display = 'none';
+        }
+
+        document.getElementById('placeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const placeData = {
+                id: editingPlaceId || Date.now(),
+                title: document.getElementById('placeTitle').value,
+                category: document.getElementById('placeCategory').value,
+                description: document.getElementById('placeDescription').value,
+                image: document.getElementById('placeImage').value,
+                mapLink: document.getElementById('placeMapLink').value,
+                featured: false
+            };
+
+            if (editingPlaceId) {
+                // Update existing place
+                const index = places.findIndex(p => p.id === editingPlaceId);
+                if (index !== -1) {
+                    places[index] = placeData;
+                }
+            } else {
+                // Add new place
+                places.push(placeData);
+            }
+
+            localStorage.setItem('adminPlaces', JSON.stringify(places));
+            loadPlaces();
+            closeModal();
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('placeModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPlaces();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>54side - Eда</title>
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { 
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Jost', sans-serif;
+            background-color: #1a1a1a;
+            color: #f5f5f5;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(26, 26, 26, 0.98);
+            z-index: 1000;
+            border-bottom: 1px solid #333;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #f5f5f5;
+            text-decoration: none;
+            z-index: 1001;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            width: 25px;
+            height: 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .mobile-menu-btn span {
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: #f5f5f5;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-btn.active span:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .mobile-menu-btn.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-btn.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: #f5f5f5;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            font-size: 16px;
+        }
+
+        .nav-links a:hover {
+            color: #daa520;
+        }
+
+        .nav-links a.active {
+            color: #daa520;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 40vh;
+            min-height: 300px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1559925393-8be0ec4767c8?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 0 20px;
+            margin-top: 60px;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #f5f5f5;
+            line-height: 1.2;
+        }
+
+        .hero-content p {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            max-width: 600px;
+            margin: 0 auto;
+            color: #cccccc;
+        }
+
+        /* Categories Section */
+        .categories-section {
+            padding: 40px 20px;
+            background-color: #1a1a1a;
+        }
+
+        .categories-title {
+            text-align: center;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: #f5f5f5;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .category-btn {
+            padding: 15px 20px;
+            background-color: #2a2a2a;
+            border: 2px solid #333;
+            border-radius: 10px;
+            color: #f5f5f5;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .category-btn:hover {
+            border-color: #daa520;
+            color: #daa520;
+        }
+
+        .category-btn.active {
+            background-color: #daa520;
+            border-color: #daa520;
+            color: #1a1a1a;
+        }
+
+        /* Places Section */
+        .places-section {
+            padding: 40px 20px;
+            background-color: #2a2a2a;
+        }
+
+        .places-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .place-card {
+            background-color: #1a1a1a;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .place-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .place-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .place-content {
+            padding: 25px;
+        }
+
+        .place-category {
+            display: inline-block;
+            padding: 5px 12px;
+            background-color: #8b4513;
+            color: white;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .place-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #f5f5f5;
+        }
+
+        .place-description {
+            color: #cccccc;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .place-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .place-link {
+            padding: 10px 25px;
+            background-color: #daa520;
+            color: #1a1a1a;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .place-link:hover {
+            background-color: #f5f5f5;
+            transform: translateY(-2px);
+        }
+
+        /* Add Place Button */
+        .add-place-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: #daa520;
+            border: none;
+            border-radius: 50%;
+            color: #1a1a1a;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(218, 165, 32, 0.3);
+            transition: all 0.3s ease;
+            z-index: 999;
+            display: none;
+        }
+
+        .add-place-btn:hover {
+            transform: scale(1.1);
+            background-color: #f5f5f5;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #111;
+            padding: 40px 20px;
+            text-align: center;
+            color: #cccccc;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #cccccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-size: 14px;
+        }
+
+        .footer-links a:hover {
+            color: #daa520;
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            header {
+                padding: 12px 15px;
+            }
+
+            .logo {
+                font-size: 22px;
+            }
+
+            /* Mobile Menu */
+            .mobile-menu-btn {
+                display: flex;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background-color: #1a1a1a;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 40px;
+                transition: right 0.3s ease;
+                border-left: 1px solid #333;
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links a {
+                font-size: 18px;
+                padding: 10px 0;
+            }
+
+            .hero {
+                height: 35vh;
+                min-height: 250px;
+                margin-top: 50px;
+            }
+
+            .categories-section, .places-section {
+                padding: 30px 15px;
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .places-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .place-image {
+                height: 200px;
+            }
+
+            .place-content {
+                padding: 20px;
+            }
+
+            .add-place-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+
+            .footer-links {
+                gap: 20px;
+            }
+
+            .footer-links a {
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                height: 30vh;
+                min-height: 200px;
+                margin-top: 45px;
+            }
+
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-btn {
+                padding: 12px 15px;
+                font-size: 13px;
+            }
+
+            .place-title {
+                font-size: 1.2rem;
+            }
+
+            .place-description {
+                font-size: 14px;
+            }
+
+            .footer-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <a href="/" class="logo">54SIDE</a>
+        
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        
+        <nav class="nav-links" id="navLinks">
+            <a href="food.html" class="active">Еда</a>
+            <a href="places.html">Места</a>
+            <a href="blog.html">Блог</a>
+            <a href="profile.html">Профиль</a>
+        </nav>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Лучшие места Новосибирска</h1>
+            <p>Открой для себя уникальные локации, проверенные местными</p>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories-section">
+        <h2 class="categories-title">Категории</h2>
+        <div class="categories-grid" id="categoriesGrid">
+            <!-- Categories will be loaded dynamically -->
+        </div>
+    </section>
+
+    <!-- Places Section -->
+    <section class="places-section">
+        <div class="places-grid" id="placesGrid">
+            <!-- Places will be loaded dynamically -->
+        </div>
+    </section>
+
+    <!-- Add Place Button (for admin) -->
+    <button class="add-place-btn" id="addPlaceBtn" onclick="goToAdmin()">+</button>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="about.html">О проекте</a>
+                <a href="contacts.html">Контакты</a>
+                <a href="advertising.html">Реклама</a>
+                <a href="social.html">Соцсети</a>
+            </div>
+            <p>© 2024 54side. Новосибирск для тех, кто ищет больше.</p>
+        </div>
+    </footer>
+
+    <script>
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        const categoriesGrid = document.getElementById('categoriesGrid');
+        const placesGrid = document.getElementById('placesGrid');
+        const addPlaceBtn = document.getElementById('addPlaceBtn');
+
+        let currentCategory = 'Все места';
+        let allPlaces = [];
+
+        // Загрузка мест из базы данных
+        async function loadPlacesFromDB() {
+            try {
+                const response = await fetch('/api/places');
+                if (response.ok) {
+                    const placesFromDB = await response.json();
+                    allPlaces = placesFromDB.map(place => ({
+                        id: place.id,
+                        title: place.title,
+                        category: place.category,
+                        description: place.description,
+                        image: place.image,
+                        mapLink: place.map_link,
+                        featured: place.featured
+                    }));
+                    return allPlaces;
+                }
+                return [];
+            } catch (error) {
+                console.error('Ошибка загрузки мест:', error);
+                return [];
+            }
+        }
+
+        // Инициализация категорий
+        async function initCategories() {
+            const places = await loadPlacesFromDB();
+            const categories = ['Все места', ...new Set(places.map(place => place.category))];
+            
+            categoriesGrid.innerHTML = '';
+            categories.forEach(category => {
+                const button = document.createElement('button');
+                button.className = `category-btn ${category === currentCategory ? 'active' : ''}`;
+                button.textContent = category;
+                button.addEventListener('click', () => filterPlaces(category));
+                categoriesGrid.appendChild(button);
+            });
+        }
+
+        // Фильтрация мест
+        function filterPlaces(category) {
+            currentCategory = category;
+            
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent === category) {
+                    btn.classList.add('active');
+                }
+            });
+
+            const filteredPlaces = category === 'Все места' 
+                ? allPlaces 
+                : allPlaces.filter(place => place.category === category);
+
+            displayPlaces(filteredPlaces);
+        }
+
+        // Отображение мест
+        function displayPlaces(placesToShow) {
+            placesGrid.innerHTML = '';
+            
+            if (placesToShow.length === 0) {
+                placesGrid.innerHTML = '<p style="color: #666; text-align: center; grid-column: 1/-1;">Пока нет мест в этой категории</p>';
+                return;
+            }
+            
+            placesToShow.forEach(place => {
+                const placeCard = document.createElement('div');
+                placeCard.className = 'place-card';
+                placeCard.innerHTML = `
+                    <img src="${place.image}" alt="${place.title}" class="place-image">
+                    <div class="place-content">
+                        <span class="place-category">${place.category}</span>
+                        <h3 class="place-title">${place.title}</h3>
+                        <p class="place-description">${place.description}</p>
+                        <div class="place-meta">
+                            <a href="${place.mapLink}" target="_blank" class="place-link">На карте</a>
+                        </div>
+                    </div>
+                `;
+                placesGrid.appendChild(placeCard);
+            });
+        }
+
+        // Проверка админа
+        function checkAdminStatus() {
+            const isAdmin = localStorage.getItem('adminEmail') === 'admin@54side.ru';
+            if (isAdmin) {
+                addPlaceBtn.style.display = 'block';
+            }
+        }
+
+        function goToAdmin() {
+            window.location.href = '/admin.html';
+        }
+
+        // Mobile menu functionality
+        mobileMenuBtn.addEventListener('click', function() {
+            this.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Close menu when clicking on links
+        const navItems = navLinks.querySelectorAll('a');
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                mobileMenuBtn.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async function() {
+            await initCategories();
+            await filterPlaces('Все места');
+            checkAdminStatus();
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const isClickInsideNav = navLinks.contains(event.target);
+            const isClickInsideBtn = mobileMenuBtn.contains(event.target);
+            
+            if (!isClickInsideNav && !isClickInsideBtn && navLinks.classList.contains('active')) {
+                mobileMenuBtn.classList.remove('active');
+                navLinks.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
